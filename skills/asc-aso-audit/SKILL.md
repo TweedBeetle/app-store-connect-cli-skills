@@ -144,9 +144,10 @@ Flag high-value combos in recommendations.
 
 ### Skip Conditions
 
-- Astro MCP not connected → skip with note: "Connect Astro MCP for keyword gap analysis"
-- App not tracked in Astro → skip with note: "Add app to Astro with `mcp__astro__add_app` for gap analysis"
+- Astro MCP not connected → skip with note: "Connect Astro MCP for keyword gap analysis (requires Astro.app running, HTTP server at http://127.0.0.1:8089/mcp)"
+- App not tracked in Astro → skip with note: "Add app to Astro with `add_app` tool for gap analysis". Note: apps in DEVELOPER_REJECTED state can't be added.
 - Store not tracked for a locale → add tracking with `add_keywords` before querying
+- **Tool access gotcha**: Astro MCP tools are NOT in Claude Code's deferred tool list (`ToolSearch` won't find them). Call via `curl -s -X POST http://127.0.0.1:8089/mcp -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"TOOL_NAME","arguments":{...}}}'` and parse the `result.content[0].text` field.
 
 ## Output Format
 
