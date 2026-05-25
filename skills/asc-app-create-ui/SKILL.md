@@ -8,6 +8,11 @@ description: Create a new App Store Connect app record via browser automation. U
 Use this skill to create a new App Store Connect app by driving the web UI.
 This is opt-in, local-only automation that requires the user to be signed in.
 
+## CLI alternative (often faster than the UI) — `asc web apps create` <!-- added: 2026-05-24 -->
+There is a CLI path: `asc web apps create --name "X" --bundle-id <id> --sku <SKU> --platform <P> --auto-rename=false`. It uses the **web session** (`asc web auth`), NOT the API key — see asc-cli-usage "two separate auths." Two gotchas that cost real time:
+- **`--platform` accepts only `IOS, MAC_OS, TV_OS, UNIVERSAL` — there is NO `VISIONOS` value.** For a **visionOS** app use **`--platform IOS`** (visionOS lives under the iOS app umbrella). `--platform UNIVERSAL` returns an opaque **409** (it requires multi-platform universal-purchase eligibility) — this 409, with no detail body, is easily misread as "pending agreement" or "duplicate app." It is neither: try `--platform IOS`.
+- A `409` here is a genuine conflict only after you've ruled out: an expired web session (refresh first — the CLI may surface "Session expired" instead), a real duplicate (`asc apps list` shows none), and the wrong platform (above). Diagnose in that order before blaming an Apple agreement.
+
 ## Preconditions
 - A browser automation tool is available (Playwright, Cursor browser MCP, or equivalent).
 - User is signed in to App Store Connect (or can complete login + 2FA).
