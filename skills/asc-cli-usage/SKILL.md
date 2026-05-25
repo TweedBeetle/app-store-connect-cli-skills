@@ -37,7 +37,9 @@ Use this skill when you need to run or design `asc` commands for App Store Conne
 ### In-app purchases (`asc iap`) <!-- added: 2026-05-24 -->
 - `asc iap setup` does create + first-localization + initial price schedule in one call. If a later step fails, **the IAP record is still created** — resume the failed steps on the existing iapId (`asc iap localizations create`, `asc iap pricing schedules create --price <amount> --base-territory USA`) rather than delete + recreate.
 - **IAP localization `--description` max = 55 characters** (display `--name` max 30). Easy to overshoot → `create_localization` fails.
-- A new IAP sits in `MISSING_METADATA` until it has a localization, a price, AND a **review screenshot**; the **first IAP for an app must be attached to a version in the ASC web UI** (no API/CLI path for that attachment).
+- A new IAP sits in `MISSING_METADATA` until it has a localization, a price, AND a **review screenshot** (upload via `asc iap review-screenshots create` — CLI, programmatic) → then `READY_TO_SUBMIT`.
+- The **first IAP version-attach has no `asc` CLI/API path** (first-time `inAppPurchaseV2`), BUT it's **not a manual user step** — automate it via **Chrome MCP against the user's signed-in Chrome** (version page → "Select In-App Purchases or Subscriptions" → check products → Done). Full path: `~/.claude/skills/ios-dev/references/asc-submission.md`. Don't surface it as a "user must do this" blocker.
+- ⚠️ Do **NOT** run `asc iap submit` when you intend to attach the IAP to a version — it submits the IAP independently and **destroys the version-attach path**.
 
 ## Timeouts
 - `ASC_TIMEOUT` / `ASC_TIMEOUT_SECONDS` control request timeouts.
